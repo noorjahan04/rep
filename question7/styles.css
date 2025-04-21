@@ -1,0 +1,52 @@
+/* Apply general styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .navbar {
+    display: flex; /* Align sections horizontally */
+    justify-content: space-around;
+    padding: 20px;
+    background-color: #333;
+  }
+  
+  .section a {
+    color: white; /* Default color for links */
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+  }
+  
+  /* Descendant combinator - styles links differently within each section */
+  .section-1 a {
+    color: lightblue;
+  }
+  
+  .section-2 a {
+    color: lightgreen;
+  }
+  
+  .section-3 a {
+    color: lightcoral;
+  }
+  
+  /* Child combinator - styles direct children only */
+  .section > a {
+    font-weight: bold; /* Direct child links appear bold */
+  }
+  
+  /* Pseudo-classes for interaction */
+  a:hover {
+    color: yellow; /* Highlight on hover */
+  }
+  
+  a:active {
+    color: red; /* Changes color when clicked */
+  }
+  
+  /* Attribute selector - targets links starting with "https" */
+  a[href^="https"] {
+    color: gold !important; /* Overrides other styles using specificity */
+  }
