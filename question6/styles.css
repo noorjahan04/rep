@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /*We  Ensures padding and border are included in element dimensions */
+  }
+  .container {
+    display: flex; /* Changed from block to flex for proper alignment */
+    justify-content: space-around; /* Evenly spaces boxes */
+    flex-wrap: wrap; /* Allows boxes to wrap on smaller screens */
+    padding: 10px;
+  }
+  .box {
+    width: 100px;
+    height: 100px;
+    background: lightblue;
+    border: 1px solid black;
+    margin: 10px; /* Changed from negative margin (-10px) to positive to prevent overlap */
+  }
+  .text {
+    position: relative; /* Changed from fixed to relative for better positioning */
+    text-align: center; /* Centers text */
+  }
