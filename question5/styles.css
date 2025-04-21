@@ -1,0 +1,13 @@
+li:first-child {
+    font-weight: bold;
+  }
+  li:first-child + li {
+    background-color: lightblue;
+  }
+  li:nth-child(3) ~ li {
+    font-style: italic;
+  }
+  li:hover {
+    color: darkred;
+    cursor: pointer;
+  }
