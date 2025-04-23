@@ -1,0 +1,22 @@
+/* Basic container styling */
+.container {
+    display: flex; /* It Enables flexbox */
+    flex-direction: row; /*I have Initially arranges items in a row */
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 10px; /* I have Added spacing between items */
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+/* Styling for individual items */
+.item {
+    background-color: #3498db;
+    color: white;
+    padding: 20px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+}
+/* Changes layout to column */
+.container.column {
+    flex-direction: column; /* Items are now arranged vertically */
+}
