@@ -1,0 +1,46 @@
+/* Added box-sizing to include padding and border in element's total width/height */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  /* Added body padding for spacing */
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  /* Centered and spaced out heading */
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  /* Changed from block to flex layout, added wrapping and spacing between boxes */
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding: 10px;
+  }
+  /* Removed position: absolute and negative margin
+     Added flex centering inside box */
+  .box {
+    width: 100px;
+    height: 100px;
+    background: lightblue;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  } 
+  /* Changed from top fixed to bottom centered with transform */
+  .text {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
