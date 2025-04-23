@@ -1,0 +1,28 @@
+#block-element {
+    display: block;
+    width: 100%;
+    border: 2px solid blue;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+#inline-element {
+    display: inline;
+    background-color: lightgreen;
+    padding: 5px;
+}
+#inline-block-element {
+    display: inline-block;
+    width: 150px;
+    border: 2px solid red;
+    padding: 10px;
+    margin: 10px;
+}
+#hidden-element {
+    display: none;
+    background-color: yellow;
+    padding: 10px;
+    border: 2px solid black;
+}
+input[type="checkbox"]:checked + label + #hidden-element {
+    display: block;
+}
