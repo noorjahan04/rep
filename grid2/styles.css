@@ -1,0 +1,51 @@
+body {
+    background: linear-gradient(to bottom, #00bcd4, #00796b); 
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .keyboard {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 10px;
+    background: #111; 
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  }
+  .key {
+    background: #222; 
+    color: #00e5ff;   
+    padding: 20px 10px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: inset 0 0 8px rgba(0, 229, 255, 0.4);
+  }
+  .delete {
+    grid-column: span 2;
+  }
+  .tab {
+    grid-column: span 2;
+  }
+  .caps {
+    grid-column: span 2;
+  }
+  .enter {
+    grid-column: span 2;
+  }
+  .shift {
+    grid-column: span 2;
+  }
+  .control,
+  .option,
+  .alt {
+    grid-column: span 1;
+  }
+  .space {
+    grid-column: span 6;
+  }
