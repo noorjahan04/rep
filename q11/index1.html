@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Store Products</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            background-color: #f4f4f4;
+        }
+        .yellow-border {
+            border: 3px solid yellow;
+        }
+        .green-border {
+            border: 3px solid green;
+        }
+        .product-card img {
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container" id="productGrid"></div>
+    <script>
+        fetch('https://fakestoreapi.com/products')
+            .then(response => response.json())
+            .then(products => {
+                let productGrid = document.getElementById("productGrid");
+                products.forEach(product => {
+                    let productCard = document.createElement("div");
+                    productCard.classList.add("product-card");
+                    productCard.classList.add(product.price > 50 ? "yellow-border" : "green-border");
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.title}">
+                        <strong>${product.title}</strong><br>
+                        Price: $${product.price}
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+            })
+            .catch(error => console.error("Error fetching products:", error));
+    </script>
+</body>
+</html>
