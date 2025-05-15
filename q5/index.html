@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #taskList {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <button id="addTaskButton">Add Task</button>
+    <ul id="taskList"></ul>
+    <script>
+        const taskInput = document.getElementById("taskInput");
+        const addTaskButton = document.getElementById("addTaskButton");
+        const taskList = document.getElementById("taskList");
+        addTaskButton.addEventListener("click", () => {
+            const taskText = taskInput.value.trim();
+            if (taskText === "") {
+                alert("Task cannot be empty!");
+                return;
+            }
+            const li = document.createElement("li");
+            li.textContent = taskText;
+            const completeButton = document.createElement("button");
+            completeButton.textContent = "Complete";
+            completeButton.addEventListener("click", () => {
+                li.classList.toggle("completed");
+            });
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.addEventListener("click", () => {
+                taskList.removeChild(li);
+            });
+            li.appendChild(completeButton);
+            li.appendChild(deleteButton);
+            taskList.appendChild(li);
+            taskInput.value = "";
+        });
+    </script>
+</body>
+</html>
