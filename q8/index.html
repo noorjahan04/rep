@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Propagation Example</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        #outer { padding: 30px; background-color: lightblue; }
+        #middle { padding: 20px; background-color: lightgreen; }
+        #inner { padding: 10px; background-color: lightcoral; }
+    </style>
+</head>
+<body>
+    <div id="outer">
+        Outer Div
+        <div id="middle">
+            Middle Div
+            <div id="inner">
+                Inner Div
+                <button id="innerButton">Click Me</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
