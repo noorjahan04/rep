@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase CRUD App</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; }
+        .container { max-width: 600px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Firebase CRUD App</h2>
+        <div class="mb-3">
+            <input type="text" id="name" class="form-control" placeholder="Enter Name">
+        </div>
+        <div class="mb-3">
+            <input type="email" id="email" class="form-control" placeholder="Enter Email">
+        </div>
+        <button class="btn btn-primary" onclick="createUser()">Add User</button>
+        <h3 class="mt-4">User List</h3>
+        <ul id="userList" class="list-group"></ul>
+    </div>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://fir-29a7d-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        function createUser() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            if (name && email) {
+                const userRef = database.ref("users").push();
+                userRef.set({ name, email }).then(() => {
+                    alert("User Added!");
+                    document.getElementById("name").value = "";
+                    document.getElementById("email").value = "";
+                    readUsers();
+                }).catch(error => console.error(error));
+            }
+        }
+        function readUsers() {
+            const userList = document.getElementById("userList");
+            userList.innerHTML = "";
+            database.ref("users").once("value", snapshot => {
+                snapshot.forEach(childSnapshot => {
+                    let user = childSnapshot.val();
+                    let userId = childSnapshot.key;
+                    let li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.innerHTML = `${user.name} - ${user.email} 
+                    <button class="btn btn-sm btn-warning" onclick="updateUser('${userId}', '${user.name}', '${user.email}')">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${userId}')">Delete</button>`;
+                    userList.appendChild(li);
+                });
+            });
+        }
+        function updateUser(userId, oldName, oldEmail) {
+            let newName = prompt("Enter new name:", oldName);
+            let newEmail = prompt("Enter new email:", oldEmail);
+            if (newName && newEmail) {
+                database.ref("users/" + userId).set({ name: newName, email: newEmail }).then(() => {
+                    alert("User Updated!");
+                    readUsers();
+                }).catch(error => console.error(error));
+            }
+        }
+        function deleteUser(userId) {
+            if (confirm("Are you sure you want to delete this user?")) {
+                database.ref("users/" + userId).remove().then(() => {
+                    alert("User Deleted!");
+                    readUsers();
+                }).catch(error => console.error(error));
+            }
+        }
+        window.onload = readUsers;
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockAPI CRUD App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; }
+        .container { max-width: 600px; }
+        .loading { display: none; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">MockAPI CRUD App</h2>
+        <div id="loading" class="loading">Loading...</div>
+        <div class="mb-3">
+            <input type="text" id="name" class="form-control" placeholder="Enter Name">
+        </div>
+        <div class="mb-3">
+            <input type="number" id="age" class="form-control" placeholder="Enter Age">
+        </div>
+        <div class="mb-3">
+            <input type="text" id="course" class="form-control" placeholder="Enter Course">
+        </div>
+        <button class="btn btn-primary" onclick="createStudent()">Add Student</button>
+        <h3 class="mt-4">Student List</h3>
+        <ul id="studentList" class="list-group"></ul>
+    </div>
+    <script>
+        const API_URL = "https://68202c7c72e59f922ef7eb7b.mockapi.io/userdetails"; 
+        function showLoading(show) {
+            document.getElementById("loading").style.display = show ? "block" : "none";
+        }
+        async function createStudent() {
+            let name = document.getElementById("name").value;
+            let age = document.getElementById("age").value;
+            let course = document.getElementById("course").value;
+            if (!name || !age || !course) {
+                alert("All fields are required!");
+                return;
+            }
+            showLoading(true);
+            try {
+                await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, age, course })
+                });
+                alert("Student Added!");
+                document.getElementById("name").value = "";
+                document.getElementById("age").value = "";
+                document.getElementById("course").value = "";
+                readStudents();
+            } catch (error) {
+                console.error("Error adding student:", error);
+                alert("Failed to add student.");
+            }
+            showLoading(false);
+        }
+        async function readStudents() {
+            showLoading(true);
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const students = await response.json();
+                if (!Array.isArray(students)) throw new Error("Invalid data format received.");
+                const studentList = document.getElementById("studentList");
+                studentList.innerHTML = "";
+                students.forEach(student => {
+                    let li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.innerHTML = `${student.name} - ${student.age} - ${student.course} 
+                    <button class="btn btn-sm btn-warning" onclick="updateStudent('${student.id}', '${student.name}', '${student.age}', '${student.course}')">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteStudent('${student.id}')">Delete</button>`;
+                    studentList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error fetching students:", error);
+                alert("Failed to fetch students! Check API URL.");
+            }
+            showLoading(false);
+        }
+        async function updateStudent(id, oldName, oldAge, oldCourse) {
+            let newName = prompt("Enter new name:", oldName);
+            let newAge = prompt("Enter new age:", oldAge);
+            let newCourse = prompt("Enter new course:", oldCourse);
+            if (newName && newAge && newCourse) {
+                showLoading(true);
+                try {
+                    await fetch(`${API_URL}/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name: newName, age: newAge, course: newCourse })
+                    });
+                    alert("Student Updated!");
+                    readStudents();
+                } catch (error) {
+                    console.error("Error updating student:", error);
+                    alert("Failed to update student.");
+                }
+                showLoading(false);
+            }
+        }
+        async function deleteStudent(id) {
+            if (confirm("Are you sure you want to delete this student?")) {
+                showLoading(true);
+                try {
+                    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+                    alert("Student Deleted!");
+                    readStudents();
+                } catch (error) {
+                    console.error("Error deleting student:", error);
+                    alert("Failed to delete student.");
+                }
+                showLoading(false);
+            }
+        }
+        window.onload = readStudents;
+    </script>
+</body>
+</html>
