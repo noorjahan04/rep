@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Todo App</title>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 10px; background: #f4f4f4; margin: 5px; display: flex; justify-content: space-between; }
+        .completed { text-decoration: line-through; color: gray; }
+        #status { font-style: italic; color: green; }
+    </style>
+</head>
+<body>
+    <h2>Firebase Todo App</h2>
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add Task</button>
+    <select id="filter" onchange="filterTasks()">
+        <option value="all">All</option>
+        <option value="completed">Completed</option>
+        <option value="incomplete">Incomplete</option>
+    </select>
+    <p id="status">Loading...</p>
+    <ul id="taskList"></ul>
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://fir-29a7d-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("todos");
+        function loadTasks() {
+            document.getElementById("status").innerText = "Syncing...";
+            db.on("value", (snapshot) => {
+                const tasks = snapshot.val() || {};
+                displayTasks(tasks);
+                document.getElementById("status").innerText = "Synced!";
+            });
+        }
+        function addTask() {
+            let taskText = document.getElementById("taskInput").value.trim();
+            if (taskText === "") {
+                alert("Task cannot be empty!");
+                return;
+            }
+            const taskId = Date.now();
+            db.child(taskId).set({
+                text: taskText,
+                completed: false
+            });
+            document.getElementById("taskInput").value = "";
+        }
+        function filterTasks() {
+            let filterType = document.getElementById("filter").value;
+            db.once("value").then(snapshot => {
+                const tasks = snapshot.val() || {};
+                let filteredTasks = {};
+                Object.keys(tasks).forEach(taskId => {
+                    const task = tasks[taskId];
+                    if (filterType === "completed" && task.completed) {
+                        filteredTasks[taskId] = task;
+                    } else if (filterType === "incomplete" && !task.completed) {
+                        filteredTasks[taskId] = task;
+                    } else if (filterType === "all") {
+                        filteredTasks[taskId] = task;
+                    }
+                });
+                displayTasks(filteredTasks);
+            });
+        }
+        function displayTasks(tasks) {
+            let taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+            Object.keys(tasks).forEach(taskId => {
+                const task = tasks[taskId];
+                let li = document.createElement("li");
+                li.innerHTML = `
+                    <span class="${task.completed ? 'completed' : ''}" onclick="toggleComplete('${taskId}', ${task.completed})">${task.text}</span>
+                    <button onclick="removeTask('${taskId}')">Delete</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+        function toggleComplete(taskId, status) {
+            db.child(taskId).update({ completed: !status });
+        }
+        function removeTask(taskId) {
+            db.child(taskId).remove();
+        }
+        document.addEventListener("DOMContentLoaded", loadTasks);
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Theme Selector</title>
+    <style>
+        /* Default Light Theme */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Dark Theme */
+        .dark-theme {
+            background-color: #222;
+            color: white;
+        }
+        /* Blue Theme */
+        .blue-theme {
+            background-color: #007BFF;
+            color: white;
+        }
+        /* Dropdown Styling */
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Dynamic Theme Selector</h2>
+    <!-- Dropdown menu to select theme -->
+    <label for="theme-selector">Select Theme: </label>
+    <select id="theme-selector" onchange="changeTheme()">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="blue">Blue</option>
+    </select>
+    <script>
+        // Function to apply the selected theme
+        function changeTheme() {
+            let selectedTheme = document.getElementById("theme-selector").value;
+            // Apply theme by changing body class
+            document.body.className = selectedTheme + "-theme";
+            // Store selected theme in sessionStorage
+            sessionStorage.setItem("selectedTheme", selectedTheme);
+        }
+        // Function to load the theme on page refresh (within session)
+        function loadTheme() {
+            let savedTheme = sessionStorage.getItem("selectedTheme");
+            // Default to "Light" if no theme is stored
+            if (!savedTheme) {
+                savedTheme = "light";
+            }
+            // Apply the stored theme
+            document.body.className = savedTheme + "-theme";
+            // Set dropdown value to match the applied theme
+            document.getElementById("theme-selector").value = savedTheme;
+        }
+        // Load theme when page loads
+        window.onload = loadTheme;
+    </script>
+</body>
+</html>

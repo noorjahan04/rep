@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent List with LocalStorage</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 10px; background: #f4f4f4; margin: 5px; }
+        .empty-message { color: gray; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h2>Persistent List</h2>
+    <input type="text" id="itemInput" placeholder="Enter item">
+    <button onclick="addItem()">Add Item</button>
+    <button onclick="clearAll()">Clear All</button>
+    <p id="emptyMessage" class="empty-message">No items added yet.</p>
+    <ul id="itemList"></ul>
+    <script>
+        window.onload = function() {
+            loadItems();
+        };
+        function addItem() {
+            let itemText = document.getElementById("itemInput").value.trim();
+            if (itemText === "") {
+                alert("Item cannot be empty!");
+                return;
+            }
+            let items = JSON.parse(localStorage.getItem("items")) || [];
+            items.push(itemText);
+            localStorage.setItem("items", JSON.stringify(items));
+            document.getElementById("itemInput").value = "";
+            loadItems();
+        }
+        function loadItems() {
+            let items = JSON.parse(localStorage.getItem("items")) || [];
+            let itemList = document.getElementById("itemList");
+            let emptyMessage = document.getElementById("emptyMessage");
+            itemList.innerHTML = "";
+            if (items.length === 0) {
+                emptyMessage.style.display = "block";
+            } else {
+                emptyMessage.style.display = "none";
+                items.forEach(item => {
+                    let li = document.createElement("li");
+                    li.textContent = item;
+                    itemList.appendChild(li);
+                });
+            }
+        }
+        function clearAll() {
+            localStorage.removeItem("items");
+            loadItems();
+        }
+    </script>
+</body>
+</html>
