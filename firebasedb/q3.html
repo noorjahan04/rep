@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal-content {
+            text-align: left;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Feedback Entries</h2>
+    <table id="feedbackTable">
+        <tr>
+            <th>Username</th>
+            <th>Message</th>
+            <th>Actions</th>
+        </tr>
+    </table>
+    <div id="editFeedbackModal" class="modal">
+        <h2>Edit Feedback</h2>
+        <form id="editFeedbackForm">
+            <input type="text" id="feedbackUsername" placeholder="Username" required />
+            <textarea id="feedbackMessage" placeholder="Message" required></textarea>
+            <button type="submit">Update</button>
+            <button type="button" onclick="closeModal()">Cancel</button>
+        </form>
+    </div>
+    <script>
+        const firebaseURL = "https://sample-7930e-default-rtdb.asia-southeast1.firebasedatabase.app/users";
+        function loadFeedback() {
+            fetch(`${firebaseURL}.json`)
+            .then(response => response.json())
+            .then(data => {
+                const feedbackTable = document.getElementById("feedbackTable");
+                feedbackTable.innerHTML = `
+                    <tr>
+                        <th>Username</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                `;
+                for (let feedbackId in data) {
+                    let feedback = data[feedbackId];
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${feedback.username}</td>
+                        <td>${feedback.message}</td>
+                        <td><button onclick="openEditForm('${feedbackId}', '${feedback.username}', '${feedback.message}')">Edit</button></td>
+                    `;
+                    feedbackTable.appendChild(row);
+                }
+            })
+            .catch(error => console.error("Error fetching feedback:", error));
+        }
+        function openEditForm(feedbackId, username, message) {
+            document.getElementById("editFeedbackModal").style.display = "block";
+            document.getElementById("feedbackUsername").value = username;
+            document.getElementById("feedbackMessage").value = message;
+            document.getElementById("editFeedbackForm").onsubmit = function(event) {
+                event.preventDefault();
+                updateFeedback(feedbackId);
+            };
+        }
+        function updateFeedback(feedbackId) {
+            let updatedData = {
+                username: document.getElementById("feedbackUsername").value,
+                message: document.getElementById("feedbackMessage").value
+            };
+            fetch(`${firebaseURL}/${feedbackId}.json`, { 
+                method: "PATCH",
+                body: JSON.stringify(updatedData),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert("Feedback updated successfully!");
+                closeModal();
+                loadFeedback();
+            })
+            .catch(error => console.error("Error updating feedback:", error));
+        }
+        function closeModal() {
+            document.getElementById("editFeedbackModal").style.display = "none";
+        }
+        loadFeedback();
+    </script>
+</body>
+</html>
