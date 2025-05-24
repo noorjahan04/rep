@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todos with Pagination</title>
+  <script>
+    // Array to store fetched todo items
+    let todosData = []; 
+    // Function to fetch todos from an API
+    function fetchTodos() {
+      fetch("https://jsonplaceholder.typicode.com/todos") // Fetch todos from API
+        .then(res => res.json()) // Convert response to JSON
+        .then(data => {
+          todosData = data; // Store fetched data
+          createPagination(); // Generate pagination buttons
+          displayTodos(1); // Display first page of todos
+        });
+    }
+    // Function to display todos for the selected page
+    function displayTodos(page) {
+      let container = document.getElementById("todo-container");
+      container.innerHTML = ""; // Clear previous todos
+      // Calculate start and end index for current page
+      let start = (page - 1) * 10;
+      let end = start + 10;
+      // Slice the todosData array to get only the items for the current page
+      let currentTodos = todosData.slice(start, end); 
+      // Loop through selected todos and display them
+      currentTodos.forEach(todo => {
+        let div = document.createElement("div"); // Create div for each todo
+        div.textContent = todo.title; // Set todo title as text
+        // Create checkbox for marking completion status
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = todo.completed; // Set checkbox state based on todo status
+        div.appendChild(checkbox); // Add checkbox to todo item
+        container.appendChild(div); // Add todo item to container
+      });
+    }
+    // Function to create pagination buttons
+    function createPagination() {
+      let pagination = document.getElementById("pagination");
+      pagination.innerHTML = ""; // Clear previous pagination buttons
+      // Generate buttons for pages (assuming 20 pages)
+      for (let i = 1; i <= 20; i++) {
+        let btn = document.createElement("button");
+        btn.textContent = i; // Set button label as page number
+        btn.onclick = () => displayTodos(i); // Set click event to display respective page
+        pagination.appendChild(btn); // Add button to pagination container
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Button to trigger fetching of todos -->
+  <button onclick="fetchTodos()">Fetch Todos</button>
+  <!-- Container where fetched todos will be displayed -->
+  <div id="todo-container"></div>
+  <!-- Container for pagination buttons -->
+  <div id="pagination"></div>
+</body>
+</html>
