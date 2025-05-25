@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback Form</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 300px; padding: 5px; }
+    .message { margin-top: 15px; font-weight: bold; }
+    #feedbackList { margin-top: 30px; }
+    .entry { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    .username { font-weight: bold; }
+    .timestamp { color: #888; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h2>Submit Feedback</h2>
+  <form id="feedbackForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required>
+    <label for="message">Message:</label>
+    <textarea id="message" rows="4" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <div id="status" class="message"></div>
+  <h3>Previous Feedback</h3>
+  <div id="feedbackList"></div>
+  <script>
+    let form = document.getElementById('feedbackForm');
+    let status = document.getElementById('status');
+    let feedbackList = document.getElementById('feedbackList');
+    let firebaseURL = 'https://appdatabase-7f53d-default-rtdb.asia-southeast1.firebasedatabase.app/users.json'; 
+    async function loadFeedback() {
+      feedbackList.innerHTML = "Loading...";
+      try {
+        let res = await fetch(firebaseURL);
+        let data = await res.json();
+        feedbackList.innerHTML = "";
+        if (!data) {
+          feedbackList.textContent = "No feedback submitted yet.";
+          return;
+        }
+        let entries = Object.values(data).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        entries.forEach(entry => {
+          let div = document.createElement('div');
+          div.className = 'entry';
+          div.innerHTML = `
+            <div class="username">${entry.username}</div>
+            <div class="timestamp">${new Date(entry.timestamp).toLocaleString()}</div>
+            <div class="text">${entry.message}</div>
+          `;
+          feedbackList.appendChild(div);
+        });
+      } catch (err) {
+        feedbackList.textContent = "Failed to load feedback.";
+      }
+    }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let username = document.getElementById('username').value.trim();
+      let message = document.getElementById('message').value.trim();
+      if (!username || !message) {
+        status.textContent = "Please fill out all fields.";
+        status.style.color = "red";
+        return;
+      }
+      let feedback = { username, message, timestamp: new Date().toISOString() };
+      try {
+        let response = await fetch(firebaseURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(feedback)
+        });
+        if (response.ok) {
+          status.textContent = "Feedback submitted successfully!";
+          status.style.color = "green";
+          form.reset();
+          loadFeedback();
+        } else {
+          throw new Error("Failed to submit feedback.");
+        }
+      } catch (error) {
+        status.textContent = error.message;
+        status.style.color = "red";
+      }
+    });
+    window.onload = loadFeedback;
+  </script>
+</body>
+</html>
