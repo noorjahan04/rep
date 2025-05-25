@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 8px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Dashboard</h2>
+    <h3>Registered Users</h3>
+    <ul id="user-list"></ul>
+    <h3>Add a New User</h3>
+    <form id="user-form">
+        <input type="text" id="name" placeholder="Enter Name" required>
+        <input type="email" id="email" placeholder="Enter Email" required>
+        <button type="submit">Add User</button>
+    </form>
+    <script>
+        let apiUrl = 'https://68202c7c72e59f922ef7eb7b.mockapi.io/products';
+        async function fetchUsers() {
+            try {
+                let response = await fetch(apiUrl);
+                let users = await response.json();
+                let userList = document.getElementById('user-list');
+                userList.innerHTML = '';
+                users.forEach(user => {
+                    let userItem = document.createElement('li');
+                    userItem.textContent = `${user.name} (${user.email})`;
+                    userList.appendChild(userItem);
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+        async function addUser(event) {
+            event.preventDefault();
+            let name = document.getElementById('name').value.trim();
+            let email = document.getElementById('email').value.trim();
+            if (!name || !email) {
+                alert('Please enter both Name and Email!');
+                return;
+            }
+            try {
+                let existingUsersResponse = await fetch(apiUrl);
+                let existingUsers = await existingUsersResponse.json();
+                if (existingUsers.some(user => user.email === email)) {
+                    alert('Email already exists! Try a different one.');
+                    return;
+                }
+                let newUser = { name, email };
+                await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newUser)
+                });
+                alert('User added successfully!');
+                fetchUsers();
+            } catch (error) {
+                console.error('Error adding user:', error);
+            }
+        }
+        document.getElementById('user-form').addEventListener('submit', addUser);
+        fetchUsers();
+    </script>
+</body>
+</html>
