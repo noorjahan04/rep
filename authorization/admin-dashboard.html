@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+        .container { max-width: 500px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        input, button { width: 80%; padding: 10px; margin: 10px; border-radius: 5px; }
+        button { background-color: #28a745; color: white; cursor: pointer; }
+        img { width: 100px; margin-top: 10px; }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "authentication-2df46.firebaseapp.com",
+            projectId: "authentication-2df46",
+            storageBucket: "authentication-2df46.appspot.com",
+            messagingSenderId: "878508241019",
+            appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+            measurementId: "G-HL1G6ESF04"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        function addProduct() {
+            const title = document.getElementById("title").value;
+            const price = document.getElementById("price").value;
+            const imageUrl = document.getElementById("imageUrl").value;
+            document.getElementById("previewImage").src = imageUrl;
+            addDoc(collection(db, "products"), { title, price, image: imageUrl })
+                .then(() => alert("Product added successfully!"))
+                .catch(error => console.error("Error adding product:", error));
+        }
+        function logout() {
+            signOut(auth).then(() => {
+                localStorage.removeItem("userRole");
+                window.location.href = "login.html";
+            });
+        }
+        window.addProduct = addProduct;
+        window.logout = logout;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+        <h3>Add Product</h3>
+        <input type="text" id="title" placeholder="Title">
+        <input type="number" id="price" placeholder="Price">
+        <input type="text" id="imageUrl" placeholder="Image URL">
+        <img id="previewImage" src="" alt="Product Image">
+        <button onclick="addProduct()">Add Product</button>
+    </div>
+</body>
+</html>

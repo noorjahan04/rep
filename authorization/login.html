@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        input, button { width: 80%; padding: 10px; margin: 10px; border-radius: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_Z51Nz75o-IjMoKpMHGr6pvlxjLd4nLY",
+            authDomain: "authentication-2df46.firebaseapp.com",
+            projectId: "authentication-2df46",
+            storageBucket: "authentication-2df46.appspot.com",
+            messagingSenderId: "878508241019",
+            appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+            measurementId: "G-HL1G6ESF04"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        function loginUser() {
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
+                    let user = userCredential.user;
+                    const docSnap = await getDoc(doc(db, "users", user.uid));
+                    if (docSnap.exists()) {
+                        const userRole = docSnap.data().role;
+                        localStorage.setItem("userRole", userRole);
+                        window.location.href = userRole === "admin" ? "admin-dashboard.html" : "user-dashboard.html";
+                    }
+                })
+                .catch(() => alert("Incorrect email or password!"));
+        }
+        window.loginUser = loginUser;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
+    </div>
+</body>
+</html>

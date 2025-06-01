@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        input, select, button { width: 80%; padding: 10px; margin: 10px; border-radius: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_Z51Nz75o-IjMoKpMHGr6pvlxjLd4nLY",
+            authDomain: "authentication-2df46.firebaseapp.com",
+            projectId: "authentication-2df46",
+            storageBucket: "authentication-2df46.appspot.com",
+            messagingSenderId: "878508241019",
+            appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+            measurementId: "G-HL1G6ESF04"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        function registerUser() {
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            let role = document.getElementById('role').value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
+                    let user = userCredential.user;
+                    await setDoc(doc(db, "users", user.uid), { email, role });
+                    alert("Registration successful! Redirecting to login...");
+                    window.location.href = "login.html";
+                })
+                .catch(error => alert(error.message));
+        }
+        window.registerUser = registerUser;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <select id="role">
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </select>
+        <button onclick="registerUser()">Sign Up</button>
+    </div>
+</body>
+</html>

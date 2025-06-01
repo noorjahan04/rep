@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+        .container { max-width: 500px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        button { background-color: #dc3545; color: white; cursor: pointer; width: 80%; padding: 10px; margin: 10px; border-radius: 5px; }
+        button:hover { background-color: #c82333; }
+        #product-list div { background: white; padding: 10px; border-radius: 5px; width: 60%; margin: 5px auto; text-align: center; }
+        img { width: 100px; margin-top: 5px; }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "authentication-2df46.firebaseapp.com",
+            projectId: "authentication-2df46",
+            storageBucket: "authentication-2df46.appspot.com",
+            messagingSenderId: "878508241019",
+            appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+            measurementId: "G-HL1G6ESF04"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        function logout() {
+            signOut(auth).then(() => {
+                localStorage.removeItem("userRole");
+                window.location.href = "login.html";
+            }).catch((error) => console.error("Error signing out:", error));
+        }
+        async function fetchProducts() {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            const productList = document.getElementById("product-list");
+            productList.innerHTML = ""; // Clear previous content
+
+            querySnapshot.forEach((doc) => {
+                const product = doc.data();
+                productList.innerHTML += `
+                    <div>
+                        <img src="${product.image}" alt="${product.title}">
+                        <p>${product.title} - $${product.price}</p>
+                    </div>
+                `;
+            });
+        }
+
+        window.logout = logout;
+        window.onload = fetchProducts;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>User Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+        <h3>Products</h3>
+        <div id="product-list"></div>
+    </div>
+</body>
+</html>
