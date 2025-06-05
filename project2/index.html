@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Record Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    form, .controls, table {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    input[type="text"], input[type="number"] {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .high-score {
+      background-color: #c8f7c5;
+    }
+    .summary {
+      font-weight: bold;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <form id="student-form">
+    <input type="text" id="name" placeholder="Name" required />
+    <input type="text" id="batch" placeholder="Batch" required />
+    <input type="number" id="age" placeholder="Age" required />
+    <input type="number" id="score" placeholder="Score (0-100)" required />
+    <button type="submit">Submit</button>
+  </form>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search by name..." />
+    <button onclick="sortBy('age')">Sort by Age</button>
+    <button onclick="sortBy('score')">Sort by Score</button>
+  </div>
+  <div class="summary" id="summary"></div>
+  <table id="student-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Batch</th>
+        <th>Age</th>
+        <th>Score</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://sample-7930e-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database().ref('students');
+    let editingKey = null;
+    document.getElementById('student-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const batch = document.getElementById('batch').value.trim();
+      const age = parseInt(document.getElementById('age').value);
+      const score = parseInt(document.getElementById('score').value);
+      if (!name || !batch || isNaN(age) || isNaN(score) || score < 0 || score > 100) {
+        alert('Please enter valid inputs');
+        return;
+      }
+      const student = { name, batch, age, score };
+      if (editingKey) {
+        db.child(editingKey).set(student);
+        editingKey = null;
+      } else {
+        db.push(student);
+      }
+      this.reset();
+    });
+    function renderTable(snapshot) {
+      const tbody = document.querySelector('#student-table tbody');
+      const searchValue = document.getElementById('search').value.toLowerCase();
+      tbody.innerHTML = '';
+      const data = [];
+      snapshot.forEach(child => {
+        const student = child.val();
+        student.key = child.key;
+        if (student.name.toLowerCase().includes(searchValue)) {
+          data.push(student);
+        }
+      });
+      data.forEach(student => {
+        const tr = document.createElement('tr');
+        if (student.score > 80) tr.classList.add('high-score');
+        tr.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.batch}</td>
+          <td>${student.age}</td>
+          <td>${student.score}</td>
+          <td>
+            <button onclick="editStudent('${student.key}')">Edit</button>
+            <button onclick="deleteStudent('${student.key}')">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      updateSummary(data);
+    }
+    function editStudent(key) {
+      db.child(key).once('value', snapshot => {
+        const student = snapshot.val();
+        document.getElementById('name').value = student.name;
+        document.getElementById('batch').value = student.batch;
+        document.getElementById('age').value = student.age;
+        document.getElementById('score').value = student.score;
+        editingKey = key;
+      });
+    }
+    function deleteStudent(key) {
+      db.child(key).remove();
+    }
+    document.getElementById('search').addEventListener('input', () => {
+      db.once('value', renderTable);
+    });
+    function sortBy(field) {
+      db.orderByChild(field).once('value', snapshot => {
+        renderTable(snapshot);
+      });
+    }
+    function updateSummary(data) {
+      const total = data.length;
+      const avg = total ? (data.reduce((acc, s) => acc + s.score, 0) / total).toFixed(2) : 0;
+      document.getElementById('summary').textContent = `Total Students: ${total}, Average Score: ${avg}`;
+    }
+    db.on('value', renderTable);
+  </script>
+</body>
+</html>

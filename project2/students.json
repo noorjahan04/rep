@@ -1,0 +1,28 @@
+{
+  "students": {
+    "student1": {
+      "name": "Alice",
+      "batch": "Web-101",
+      "age": 22,
+      "score": 85
+    },
+    "student2": {
+      "name": "Bob",
+      "batch": "Web-102",
+      "age": 23,
+      "score": 70
+    },
+    "student3": {
+      "name": "Charlie",
+      "batch": "Web-101",
+      "age": 21,
+      "score": 90
+    },
+    "student4": {
+      "name": "Daisy",
+      "batch": "Web-103",
+      "age": 24,
+      "score": 65
+    }
+  }
+}
