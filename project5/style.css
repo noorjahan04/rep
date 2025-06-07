@@ -1,0 +1,117 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+}
+.card {
+  background: white;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+input {
+  width: 90%;
+  margin: 8px 0;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+button {
+  margin-top: 10px;
+  padding: 10px 25px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background: #45a049;
+}
+.logout-btn {
+  background-color: #f44336 !important;
+  margin-bottom: 20px;
+}
+.logout-btn:hover {
+  background-color: #d32f2f !important;
+}
+.task-list {
+  margin-top: 20px;
+}
+.no-tasks {
+  color: #555;
+  font-style: italic;
+}
+.task-card {
+  background: #ffffff;
+  padding: 15px;
+  margin: 10px 0;
+  border-left: 5px solid #4caf50;
+  border-radius: 5px;
+  text-align: left;
+  position: relative;
+  transition: background 0.2s ease;
+}
+.task-card.completed {
+  background: #e0ffe0;
+  border-left-color: #388e3c;
+}
+.task-card.completed h3,
+.task-card.completed p {
+  text-decoration: line-through;
+  color: #555;
+}
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.status-badge {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: white;
+  background-color: #4caf50;
+}
+.status-badge.incomplete {
+  background-color: #f44336;
+}
+.task-actions {
+  margin-top: 10px;
+  text-align: right;
+}
+.task-actions button {
+  margin-left: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.task-actions button.btn-edit {
+  background-color: #2196f3;
+}
+.task-actions button.btn-edit:hover {
+  background-color: #1976d2;
+}
+.task-actions button.btn-complete {
+  background-color: #ff9800;
+}
+.task-actions button.btn-complete:hover {
+  background-color: #fb8c00;
+}
+.task-actions button.btn-delete {
+  background-color: #f44336;
+}
+.task-actions button.btn-delete:hover {
+  background-color: #d32f2f;
+}

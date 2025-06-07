@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Task Manager | Login & Signup</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-container {
+      max-width: 400px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h2 {
+      margin-bottom: 25px;
+      font-weight: 600;
+      color: #262626;
+    }
+    .form-section {
+      display: none;
+      flex-direction: column;
+    }
+    .form-section.active {
+      display: flex;
+    }
+    .form-section input {
+      width: 100%;
+      margin: 12px 0;
+      padding: 12px 15px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    .form-section button {
+      margin-top: 20px;
+      background-color: #0095f6;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    .form-section button:hover {
+      background-color: #007acc;
+    }
+    .toggle-text {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #262626;
+    }
+    .toggle-text a {
+      color: #0095f6;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .toggle-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Task Manager</h2>
+    <div id="signup-section" class="form-section active">
+      <input type="email" id="signupEmail" placeholder="Email" />
+      <input type="password" id="signupPassword" placeholder="Password" />
+      <button id="signup-btn">Sign Up</button>
+      <p class="toggle-text">
+        Already have an account? <a id="show-login">Log In</a>
+      </p>
+    </div>
+    <div id="login-section" class="form-section">
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button id="login-btn">Log In</button>
+      <p class="toggle-text">
+        Don't have an account? <a id="show-signup">Sign Up</a>
+      </p>
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_Z51Nz75o-IjMoKpMHGr6pvlxjLd4nLY",
+      authDomain: "authentication-2df46.firebaseapp.com",
+      projectId: "authentication-2df46",
+      storageBucket: "authentication-2df46.firebasestorage.app",
+      messagingSenderId: "878508241019",
+      appId: "1:878508241019:web:53b3492da3e31d2159f2de",
+      measurementId: "G-HL1G6ESF04"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const signupSection = document.getElementById("signup-section");
+    const loginSection = document.getElementById("login-section");
+    document.getElementById("show-login").addEventListener("click", () => {
+      signupSection.classList.remove("active");
+      loginSection.classList.add("active");
+    });
+    document.getElementById("show-signup").addEventListener("click", () => {
+      loginSection.classList.remove("active");
+      signupSection.classList.add("active");
+    });
+    document.getElementById("signup-btn").addEventListener("click", () => {
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+      if (!email || !password) {
+        alert("Please enter both email and password to sign up.");
+        return;
+      }
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          localStorage.setItem("token", userCredential.user.uid);
+          window.location.href = "tasks.html";
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    });
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      if (!email || !password) {
+        alert("Please enter both email and password to log in.");
+        return;
+      }
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          localStorage.setItem("token", userCredential.user.uid);
+          window.location.href = "tasks.html";
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    });
+  </script>
+</body>
+</html>
