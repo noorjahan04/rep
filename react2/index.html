@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pricing Plans</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 30px;
+      margin-bottom: 40px;
+    }
+
+    .header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .header h2 span {
+      display: block;
+      color: #a78bfa;
+    }
+
+    .header p {
+      max-width: 500px;
+      color: #374151;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .plan {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+      padding: 30px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .plan:last-child {
+      border-bottom: none;
+    }
+
+    .plan-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 15px;
+      color: #374151;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: 800;
+      color: #070708;
+      text-align: center;
+    }
+
+    .button-wrap {
+      text-align: center;
+    }
+
+    .button {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .primary {
+      background-color: #a78bfa;
+      color: white;
+    }
+
+    .secondary {
+      background-color: #e5e7eb;
+      color: #7c3aed;
+    }
+
+    @media (max-width: 768px) {
+      .plan {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: left;
+      }
+
+      .price,
+      .button-wrap {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const plans = [
+      {
+        name: "Starter",
+        features: ["1 lorem ipsum", "Lorem, ipsum dolor.", "Monthly Updates"],
+        price: "Free",
+        btnClass: "secondary"
+      },
+      {
+        name: "Lorem Plus",
+        features: ["1 lorem ipsum", "Lorem, ipsum dolor.", "Monthly Updates"],
+        price: "$32.00",
+        btnClass: "primary"
+      },
+      {
+        name: "Lorem Pro",
+        features: ["1 lorem ipsum", "Lorem, ipsum dolor.", "Monthly Updates"],
+        price: "$50.00",
+        btnClass: "secondary"
+      }
+    ];
+
+    const CheckIcon = () => (
+      <div className="check-icon">✓</div>
+    );
+
+    const PricingPlan = () => (
+      <div className="container">
+        <div className="header">
+          <h2>
+            The Right Plan for<br />
+            <span>Your Business</span>
+          </h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Numquam quod in iure vero. Facilis magnam, sed officiis
+            commodi labore odit.
+          </p>
+        </div>
+
+        {plans.map((plan, index) => (
+          <div className="plan" key={index}>
+            <div className="plan-name">{plan.name}</div>
+
+            <div className="features">
+              {plan.features.map((feature, i) => (
+                <div className="feature" key={i}>
+                  <CheckIcon />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="price">{plan.price}</div>
+
+            <div className="button-wrap">
+              <button className={`button ${plan.btnClass}`}>Get Started</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<PricingPlan />);
+  </script>
+</body>
+</html>
