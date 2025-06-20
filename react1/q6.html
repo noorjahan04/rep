@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User List with Props & Validation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      margin-top: 5px;
+    }
+    .error {
+      color: red;
+      font-size: 13px;
+    }
+    .user-card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 10px 0;
+    }
+    .user-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState } = React;
+    const UserCard = ({ name, email, age }) => (
+      <div className="user-card">
+        <h3>{name}</h3>
+        <p>Email: {email}</p>
+        <p>Age: {age}</p>
+      </div>
+    );
+    const UserList = ({ users }) => (
+      <div className="user-list">
+        {users.map((user, index) => (
+          <UserCard key={index} {...user} />
+        ))}
+      </div>
+    );
+    const App = () => {
+      const [users, setUsers] = useState([
+        { name: "Aarav Sharma", email: "aarav@example.com", age: 25 },
+        { name: "Meera Joshi", email: "meera@example.com", age: 30 }
+      ]);
+      const [form, setForm] = useState({ name: "", email: "", age: "" });
+      const [errors, setErrors] = useState({});
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+      };
+      const validate = () => {
+        const errs = {};
+        if (!form.name.trim()) errs.name = "Name is required.";
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(form.email)) errs.email = "Invalid email format.";
+        if (!form.age || isNaN(form.age) || parseInt(form.age) <= 0)
+          errs.age = "Age must be a positive number.";
+        return errs;
+      };
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const errs = validate();
+        if (Object.keys(errs).length > 0) {
+          setErrors(errs);
+          return;
+        }
+        const newUser = {
+          name: form.name,
+          email: form.email,
+          age: parseInt(form.age)
+        };
+        setUsers((prev) => [...prev, newUser]);
+        setForm({ name: "", email: "", age: "" });
+        setErrors({});
+      };
+      return (
+        <div>
+          <h2>Add New User</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+              />
+              {errors.name && <div className="error">{errors.name}</div>}
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+              />
+              {errors.email && <div className="error">{errors.email}</div>}
+            </div>
+            <div className="form-group">
+              <label>Age:</label>
+              <input
+                type="number"
+                name="age"
+                value={form.age}
+                onChange={handleChange}
+              />
+              {errors.age && <div className="error">{errors.age}</div>}
+            </div>
+            <button type="submit">Add User</button>
+          </form>
+          <h2>Users List</h2>
+          <UserList users={users} />
+        </div>
+      );
+    };
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

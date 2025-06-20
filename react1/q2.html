@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reusable Card Component</title>
+  <style>
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-title {
+      margin-bottom: 8px;
+      font-size: 1.25rem;
+      color: #333;
+    }
+    .card-content {
+      font-size: 1rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const Card = ({ title, children }) => (
+      <div className="card">
+        <h2 className="card-title">{title}</h2>
+        <div className="card-content">{children}</div>
+      </div>
+    );
+
+    const App = () => (
+      <div>
+        <Card title="React Basics">
+          <p>Learn about components, props, and JSX.</p>
+        </Card>
+        <Card title="Advanced Topics">
+          <ul>
+            <li>State Management</li>
+            <li>Hooks</li>
+            <li>Performance Optimization</li>
+          </ul>
+        </Card>
+        <Card title="Debugging Tips">
+          <p>Use dev tools and console logs smartly!</p>
+        </Card>
+      </div>
+    );
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

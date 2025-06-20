@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Record Management App</title>
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://sample-7930e-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+  </script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    input, button { padding: 6px; margin: 4px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid black; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Student Record Management</h2>
+
+  <form id="studentForm">
+    <input type="text" id="name" placeholder="Name" required><br>
+    <input type="text" id="batch" placeholder="Batch" required><br>
+    <input type="number" id="age" placeholder="Age" required><br>
+    <input type="number" id="score" placeholder="Score (0–100)" required min="0" max="100"><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h3>Search</h3>
+  <input type="text" id="searchInput" placeholder="Search by name">
+
+  <h3>Sort</h3>
+  <button onclick="sortByAge()">Sort by Age</button>
+  <button onclick="sortByScore()">Sort by Score</button>
+
+  <h3>Student Records</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Batch</th><th>Age</th><th>Score</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <script>
+
+    const form = document.getElementById("studentForm");
+    const tableBody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+
+    
+
+  </script>
+</body>
+</html>

@@ -36,7 +36,6 @@
         section:section.value,
         score:Number(score.value)
     };
-    
  }
 
    

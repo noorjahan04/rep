@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1 - Virtual DOM Performance in React</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+</head>
+
+<body>
+    <center>
+        <h1>L1 - Virtual DOM Performance in React</h1>
+
+        <div id="DOM-Container">
+            <h1 id="content">Title: This is DOM Container</h1>
+            <button id="Dom-btn">Change Title</button>
+        </div>
+
+        <div id="Root-Container">
+            <h1>This is root container</h1>
+            <button id="React-btn">Change Title</button>
+        </div>
+
+    </center>
+</body>
+
+</html>
+<script>
+    //DOM
+    let container = document.getElementById("DOM-Container");
+
+    document.getElementById('Dom-btn').addEventListener('click', () => {
+        alert("Dom clicked")
+        document.getElementById('content').innerText = "Title: Title change in DOM-Container after click";
+    })
+
+    //react
+    let reactroom = document.createElement('div');
+    document.getElementById("Root-Container").appendChild(reactroom);
+
+    let element = React.createElement('h1', null, "React Titlte as been Changed")
+
+    let root = ReactDOM.createRoot(reactroom)
+    
+    document.getElementById('React-btn').addEventListener('click',()=>{
+        alert("React is clicked");
+        root.render(element)
+    });
+</script>
