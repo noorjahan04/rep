@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>React SPA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f0f2f5;
+      }
+      nav {
+        background: #333;
+        padding: 10px;
+        display: flex;
+        gap: 20px;
+      }
+      nav button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      nav button.active {
+        font-weight: bold;
+        border-bottom: 2px solid #fff;
+      }
+      .page {
+        padding: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+      const App = () => {
+        const [activePage, setActivePage] = React.useState("Home");
+
+        const renderPage = () => {
+          switch (activePage) {
+            case "Home":
+              return <div className="page" style={{ backgroundColor: "#e0f7fa" }}><h1>Welcome to Home</h1><p>This is the home page of the SPA.</p></div>;
+            case "About":
+              return <div className="page" style={{ backgroundColor: "#fff3e0" }}><h1>About Us</h1><p>Learn more about what we do here.</p></div>;
+            case "Contact":
+              return <div className="page" style={{ backgroundColor: "#ede7f6" }}><h1>Contact Us</h1><p>Get in touch with us via this page.</p></div>;
+            default:
+              return null;
+          }
+        };
+
+        return (
+          <div>
+            <nav>
+              {["Home", "About", "Contact"].map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setActivePage(page)}
+                  className={activePage === page ? "active" : ""}
+                >
+                  {page}
+                </button>
+              ))}
+            </nav>
+            {renderPage()}
+          </div>
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
